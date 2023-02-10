@@ -5,17 +5,16 @@
 package frc.robot.subsystems.arm;
 
 import com.chaos131.pid.PIDTuner;
-import com.chaos131.pid.PIDUpdate;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.SparkMaxAbsoluteEncoder;
-import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import frc.robot.Robot;
 import frc.robot.Constants.ArmConstants.WristConstants;
+import frc.robot.Robot;
+import frc.robot.util.PidTunerSparkMaxes;
 
 /** Add your docs here. */
 public class Wrist {
@@ -29,7 +28,7 @@ public class Wrist {
         m_AbsoluteEncoder = m_wrist_A.getAbsoluteEncoder(Type.kDutyCycle);
         m_AbsoluteEncoder.setPositionConversionFactor(WristConstants.AbsoluteAngleConversionFactor);
         m_AbsoluteEncoder.setZeroOffset(WristConstants.AngleZeroOffset);
-        m_PidTuner = new PIDTuner("WristPID", true, 0.0001, 0, 0, this::tunePID);
+        m_PidTuner = new PidTunerSparkMaxes("WristPID", true, 0.0001, 0, 0, m_wrist_A);
         initializeIntegratedHallEncoder(m_wrist_A, getRotation().getDegrees());
         Robot.logManager.addNumber("Wrist/Wrist_rotation", () -> getRotation().getDegrees());
     }
@@ -41,16 +40,6 @@ public class Wrist {
     public void setTargetAngle(Rotation2d angle){
         var safeAngle = m_safetyZone.getSafeValue(angle.getDegrees());
         m_wrist_A.getPIDController().setReference(safeAngle, ControlType.kPosition);
-    }
-
-    public void tunePID(PIDUpdate pidUpdate){
-        setPID(pidUpdate, m_wrist_A.getPIDController());
-    }
-
-    public void setPID(PIDUpdate pidUpdate, SparkMaxPIDController controller){
-        controller.setP(pidUpdate.P);
-        controller.setI(pidUpdate.I);
-        controller.setD(pidUpdate.D);
     }
 
     public void initializeIntegratedHallEncoder(CANSparkMax sparkMax, double currentPosition){

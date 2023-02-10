@@ -5,17 +5,16 @@
 package frc.robot.subsystems.arm;
 
 import com.chaos131.pid.PIDTuner;
-import com.chaos131.pid.PIDUpdate;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.SparkMaxAbsoluteEncoder;
-import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import frc.robot.Robot;
 import frc.robot.Constants.ArmConstants.ShoulderConstants;
+import frc.robot.Robot;
+import frc.robot.util.PidTunerSparkMaxes;
 
 /** Add your docs here. */
 public class Shoulder {
@@ -37,7 +36,7 @@ public class Shoulder {
         m_AbsoluteEncoder = m_shoulderL_A.getAbsoluteEncoder(Type.kDutyCycle);
         m_AbsoluteEncoder.setPositionConversionFactor(ShoulderConstants.AbsoluteAngleConversionFactor);
         m_AbsoluteEncoder.setZeroOffset(ShoulderConstants.AngleZeroOffset);
-        m_PidTuner = new PIDTuner("ShoulderPID", true, 0.0001, 0, 0, this::tunePID);
+        m_PidTuner = new PidTunerSparkMaxes("ShoulderPID", true, 0.0001, 0, 0, m_shoulderL_A, m_shoulderL_B, m_shoulderR_A, m_shoulderR_B);
         initializeIntegratedHallEncoder(m_shoulderL_A, getRotation().getDegrees());
         initializeIntegratedHallEncoder(m_shoulderL_B, getRotation().getDegrees());
         initializeIntegratedHallEncoder(m_shoulderR_A, getRotation().getDegrees());
@@ -55,19 +54,6 @@ public class Shoulder {
         m_shoulderL_B.getPIDController().setReference(safeAngle, ControlType.kPosition);
         m_shoulderR_A.getPIDController().setReference(safeAngle, ControlType.kPosition);
         m_shoulderR_B.getPIDController().setReference(safeAngle, ControlType.kPosition);
-    }
-
-    public void tunePID(PIDUpdate pidUpdate){
-        setPID(pidUpdate, m_shoulderL_A.getPIDController());
-        setPID(pidUpdate, m_shoulderL_B.getPIDController());
-        setPID(pidUpdate, m_shoulderR_A.getPIDController());
-        setPID(pidUpdate, m_shoulderR_B.getPIDController());
-    }
-
-    public void setPID(PIDUpdate pidUpdate, SparkMaxPIDController controller){
-        controller.setP(pidUpdate.P);
-        controller.setI(pidUpdate.I);
-        controller.setD(pidUpdate.D);
     }
 
     public void initializeIntegratedHallEncoder(CANSparkMax sparkMax, double currentPosition){

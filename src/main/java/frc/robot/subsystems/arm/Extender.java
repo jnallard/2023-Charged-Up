@@ -16,6 +16,7 @@ import com.revrobotics.SparkMaxAnalogSensor.Mode;
 import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.Robot;
 import frc.robot.Constants.ArmConstants.ExtenderConstants;
+import frc.robot.util.PidTunerSparkMaxes;
 
 /** Add your docs here. */
 public class Extender {
@@ -28,7 +29,7 @@ public class Extender {
         m_extender_A = new CANSparkMax(ExtenderConstants.CanIdExtender_A, MotorType.kBrushless);
         m_linearPot = m_extender_A.getAnalog(Mode.kAbsolute);
         m_linearPot.setPositionConversionFactor(ExtenderConstants.LinearPotConversionFactor);
-        m_PidTuner = new PIDTuner("ExtenderPID", true, 0.0001, 0, 0, this::tunePID);
+        m_PidTuner = new PidTunerSparkMaxes("ExtenderPID", true, 0.0001, 0, 0, m_extender_A);
         initializeIntegratedHallEncoder(m_extender_A, m_linearPot.getPosition());
         Robot.logManager.addNumber("Extender/extension_in", () -> getPosition_in());
     }
@@ -40,16 +41,6 @@ public class Extender {
     public void setTargetDistance_in(double position_in){
         var safePosition = m_safetyZone.getSafeValue(position_in);
         m_extender_A.getPIDController().setReference(safePosition, ControlType.kPosition);
-    }
-
-    public void tunePID(PIDUpdate pidUpdate){
-        setPID(pidUpdate, m_extender_A.getPIDController());
-    }
-
-    public void setPID(PIDUpdate pidUpdate, SparkMaxPIDController controller){
-        controller.setP(pidUpdate.P);
-        controller.setI(pidUpdate.I);
-        controller.setD(pidUpdate.D);
     }
 
     public void initializeIntegratedHallEncoder(CANSparkMax sparkMax, double currentPosition){
