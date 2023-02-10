@@ -88,12 +88,33 @@ public final class Constants {
   public static final double UpdateFrequency_Hz = 50;
   public static final boolean Is2022Robot = false;
 
-  public static class ArmConstants{
-    public static final int CanIdShoulderL_A = 10;
-    public static final int CanIdShoulderL_B = 11;
-    public static final int CanIdShoulderR_A = 12;
-    public static final int CanIdShoulderR_B = 13;
-    public static final double ShoulderAngleConversionFactor = 360; //TODO confirm values
-    public static final double ShoulderAngleZeroOffset = 0; //TODO confirm values
+  public static class ArmConstants {
+    public static class ShoulderConstants {
+      public static final int CanIdShoulderL_A = 10;
+      public static final int CanIdShoulderL_B = 11;
+      public static final int CanIdShoulderR_A = 12;
+      public static final int CanIdShoulderR_B = 13;
+      public static final double IntegratedEncoderAngleConversionFactor = 20; //TODO confirm values - angle change per motor rotation
+      public static final double AbsoluteAngleConversionFactor = 360; //TODO confirm values
+      public static final double AngleZeroOffset = 0; //TODO confirm values
+      public static final double MaxAngleLimit = 45; //TODO confirm values
+      public static final double MinAngleLimit = -270; //TODO confirm values
+    }
+    public static class ExtenderConstants {
+      public static final int CanIdExtender_A = 14;
+      public static final double IntegratedEncoderInchesConversionFactor = 20; //TODO confirm values - angle change per motor rotation
+      public static final double LinearPotConversionFactor = 360; //TODO confirm values
+      public static final double LinearPotOffset_in = 5; //TODO confirm values
+      public static final double MaxLimit_in = 20; //TODO confirm values
+      public static final double MinLimit_in = 10; //TODO confirm values
+    }
+    public static class WristConstants {
+      public static final int CanIdWrist_A = 15;
+      public static final double IntegratedEncoderAngleConversionFactor = 20; //TODO confirm values - angle change per motor rotation
+      public static final double AbsoluteAngleConversionFactor = 360; //TODO confirm values
+      public static final double AngleZeroOffset = 0; //TODO confirm values
+      public static final double MaxAngleLimit = 160; //TODO confirm values
+      public static final double MinAngleLimit = -160; //TODO confirm values
+    }
   }
 }
