@@ -54,6 +54,9 @@ public class SwerveModule {
   }
 
   public void stop() {
+    // Update these values to fix display issues in the simulator
+    m_targetState = new SwerveModuleState(0, m_targetState.angle);
+
     m_angle.set(TalonFXControlMode.PercentOutput, 0);
     m_velocity.set(TalonFXControlMode.PercentOutput, 0);
   }
